@@ -1,6 +1,7 @@
 import numpy as np
 from scipy.io import loadmat
 from scipy.optimize import minimize
+from sklearn.svm import SVC
 
 
 def preprocess():
@@ -105,6 +106,7 @@ def blrObjFunction(initialWeights, *args):
     """
     train_data, labeli = args
 
+
     n_data = train_data.shape[0]
     n_features = train_data.shape[1]
     error = 0
@@ -114,6 +116,26 @@ def blrObjFunction(initialWeights, *args):
     # YOUR CODE HERE #
     ##################
     # HINT: Do not forget to add the bias term to your input data
+
+    #BIAS to FRONT
+    bias = np.ones((n_data,1))
+    x = np.c_[bias,train_data]
+
+    y = sigmoid(np.dot(x,initialWeights))
+    y_not = np.log(1.0 - y)
+    y = np.log(y)
+    # ERROR
+
+    a = np.multiply(labeli,y)
+    b = np.multiply((1.0 - labeli),y_not)
+    c = a + b
+    error = -(np.sum(c))
+
+    #ERROR GRAD
+
+    p = np.multiply((y - labeli), x)
+    error_grad = np.squeeze(np.asarray(np.sum(p,axis=0)))
+
 
     return error, error_grad
 
@@ -140,6 +162,15 @@ def blrPredict(W, data):
     ##################
     # HINT: Do not forget to add the bias term to your input data
 
+
+    bias = np.ones((data.shape[0],1))
+    d = np.c_[bias,data]
+
+    #gen label
+    y = sigmoid(np.dot(data,W))
+    label = np.argmax(d,1)
+    label.resize((data.shape[0],1))
+ 
     return label
 
 
@@ -216,6 +247,7 @@ for i in range(n_class):
     Y[:, i] = (train_label == i).astype(int).ravel()
 
 # Logistic Regression with Gradient Descent
+print("Computing big dick damage.")
 W = np.zeros((n_feature + 1, n_class))
 initialWeights = np.zeros((n_feature + 1, 1))
 opts = {'maxiter': 100}
@@ -246,6 +278,50 @@ print('\n\n--------------SVM-------------------\n\n')
 # YOUR CODE HERE #
 ##################
 
+print("Computing even bigger dick damage.")
+
+newtrain_label = train_label.reshape(train_label.shape[0])
+newvalidation_label = validation_label.reshape(validation_label.shape[0])
+newtest_label = test_label.reshape(test_label.shape[0])
+
+clf = SVC(kernel='linear')
+clf.fit(train_data, newtrain_label)
+print('===========\n Accuracy with linear =========== \n')
+print('Training Set Accuracy(linear):' + str(clf.score(train_data, newtrain_label) * 100) + '%\n') 
+print('Validation Set Accuracy(linear):' + str(clf.score(validation_data, newvalidation_label) * 100) + '%\n')
+print('Testing Set Accuracy(linear):' + str(clf.score(test_data, newtest_label) * 100) + '%\n')
+ 
+ 
+clf = SVC(kernel='rbf', gamma=1.0)
+clf.fit(train_data, newtrain_label)
+print('===========\n Accuracy using rbf and default gamma ===========\n')
+print('Training Set Accuracy(rbf_gamma1):' + str(clf.score(train_data, newtrain_label) * 100) + '%\n')
+print('Validation Set Accuracy(rbf_gamma1):' + str(clf.score(validation_data, newvalidation_label) * 100) + '%\n')
+print('Testing Set Accuracy(rbf_gamma1):' + str(clf.score(test_data, newtest_label) * 100) + '%\n')
+ 
+clf = SVC(kernel='rbf')
+clf.fit(train_data, newtrain_label)
+print('===========\n Accuracy using rbf ===========\n')
+print('Training Set Accuracy(rbf_default):' + str(clf.score(train_data, newtrain_label) * 100) + '%\n')
+print('Validation Set Accuracy(rbf_default):' + str(clf.score(validation_data, newvalidation_label) * 100) + '%\n')
+print('Testing Set Accuracy(rbf_defualt):' + str(clf.score(test_data, newtest_label) * 100) + '%\n')
+
+clf = SVC(kernel='rbf', C=1)    
+clf.fit(train_data, newtrain_label)
+print('===========\n Accuracy using rbf, default gamma and C = 1 =========== \n')
+print('Training Set Accuracy(rbf_c', 1, '):', str(clf.score(train_data, newtrain_label) * 100) + '%\n')
+print('Validation Set Accuracy(rbf_c', 1, '):', str(clf.score(validation_data, newvalidation_label) * 100) + '%\n')
+print('Testing Set Accuracy(rbf_c', 1, '):', str(clf.score(test_data, newtest_label) * 100) + '%\n')
+
+i = 10
+while i < 100:
+    clf = SVC(kernel='rbf',C=i)
+    clf.fit(train_data,train_label)
+     print('===========\n Accuracy using rbf,default gamma, and C = '+i+'===========\n')
+     print('\n Training set Accuracy: ' + str(clf.score(train_data, train_label)*100) + '%')
+     print('\n Validation set Accuracy: ' + str(clf.score(validation_data, validation_label)*100) + '%')
+     print('\n Testing set Accuracy: ' + str(clf.score(test_data, test_label)*100) + '%')
+     i += 10
 
 """
 Script for Extra Credit Part
