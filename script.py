@@ -121,20 +121,19 @@ def blrObjFunction(initialWeights, *args):
     bias = np.ones((n_data,1))
     x = np.c_[bias,train_data]
 
-    y = sigmoid(np.dot(x,initialWeights))
-    y_not = np.log(1.0 - y)
-    y = np.log(y)
+    theta = sigmoid(np.dot(x,initialWeights))
+    
+    theta_not = np.log(np.ones((theta.shape)) - theta)
+    theta = np.log(theta)
     # ERROR
-
-    a = np.multiply(labeli,y)
-    b = np.multiply((1.0 - labeli),y_not)
+    a = np.dot(labeli.T,theta)
+    b = np.dot((1 - labeli).T,theta_not)
     c = a + b
-    error = -(np.sum(c))
+    error = -1 * ((np.sum(c)) / n_data )
 
     #ERROR GRAD
 
-    p = np.multiply((y - labeli), x)
-    error_grad = np.squeeze(np.asarray(np.sum(p,axis=0)))
+    error_grad = np.sum(np.dot((theta-labeli),x)) / n_data
 
 
     return error, error_grad
@@ -317,11 +316,11 @@ i = 10
 while i < 100:
     clf = SVC(kernel='rbf',C=i)
     clf.fit(train_data,train_label)
-     print('===========\n Accuracy using rbf,default gamma, and C = '+i+'===========\n')
-     print('\n Training set Accuracy: ' + str(clf.score(train_data, train_label)*100) + '%')
-     print('\n Validation set Accuracy: ' + str(clf.score(validation_data, validation_label)*100) + '%')
-     print('\n Testing set Accuracy: ' + str(clf.score(test_data, test_label)*100) + '%')
-     i += 10
+    print('===========\n Accuracy using rbf,default gamma, and C = '+i+'===========\n')
+    print('\n Training set Accuracy: ' + str(clf.score(train_data, train_label)*100) + '%')
+    print('\n Validation set Accuracy: ' + str(clf.score(validation_data, validation_label)*100) + '%')
+    print('\n Testing set Accuracy: ' + str(clf.score(test_data, test_label)*100) + '%')
+    i += 10
 
 """
 Script for Extra Credit Part
