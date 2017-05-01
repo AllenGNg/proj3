@@ -121,21 +121,17 @@ def blrObjFunction(initialWeights, *args):
 
     theta = sigmoid(np.dot(x,initialWeights))
     
-    use = np.ones((train_data.shape[0],1))
-    use1 = np.subtract(use,theta)
-    
-    theta_not = np.log(use1)
-    theta = np.log(theta)
-    
+    #use = np.ones((train_data.shape[0],1))
+    #use1 = np.subtract(np.ones((train_data.shape[0],1)),theta)
     # ERROR
-    a = np.dot(labeli.T,theta)
-    b = np.dot(np.subtract(np.ones((n_data,1)),labeli).T,theta_not)
-    c = a + b
-    error = -1 * c / n_data 
+    a = np.dot(labeli.T,np.log(theta)) #temp1
+
+    b = np.dot(np.subtract(np.ones((n_data,1)),labeli).T,np.log(np.subtract(np.ones((n_data,1)),theta)))
+    error = -1 * (a + b) / n_data 
 
     #ERROR GRAD
     error_grad = np.dot(x.T,np.subtract(theta,labeli)) / n_data
-    
+
 
     return error, error_grad.flatten()
 
