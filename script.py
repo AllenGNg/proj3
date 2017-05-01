@@ -3,7 +3,6 @@ from scipy.io import loadmat
 from scipy.optimize import minimize
 from sklearn.svm import SVC
 
-
 def preprocess():
     """ 
      Input:
@@ -106,7 +105,6 @@ def blrObjFunction(initialWeights, *args):
     """
     train_data, labeli = args
 
-
     n_data = train_data.shape[0]
     n_features = train_data.shape[1]
     error = 0
@@ -123,20 +121,23 @@ def blrObjFunction(initialWeights, *args):
 
     theta = sigmoid(np.dot(x,initialWeights))
     
-    theta_not = np.log(np.ones((theta.shape)) - theta)
+    use = np.ones((train_data.shape[0],1))
+    use1 = np.subtract(use,theta)
+    
+    theta_not = np.log(use1)
     theta = np.log(theta)
+    
     # ERROR
     a = np.dot(labeli.T,theta)
-    b = np.dot((1 - labeli).T,theta_not)
+    b = np.dot(np.subtract(np.ones((n_data,1)),labeli).T,theta_not)
     c = a + b
-    error = -1 * ((np.sum(c)) / n_data )
+    error = -1 * c / n_data 
 
     #ERROR GRAD
+    error_grad = np.dot(x.T,np.subtract(theta,labeli)) / n_data
+    
 
-    error_grad = np.sum(np.dot((theta-labeli),x)) / n_data
-
-
-    return error, error_grad
+    return error, error_grad.flatten()
 
 
 def blrPredict(W, data):
@@ -167,9 +168,18 @@ def blrPredict(W, data):
 
     #gen label
     y = sigmoid(np.dot(data,W))
-    label = np.argmax(d,1)
-    label.resize((data.shape[0],1))
- 
+    count = 0
+    for e in y:
+        i = 0
+        _max = 0
+        _max_index = 0
+        for j in e:
+            if j >= _max:
+                _max = j
+                _max_index = i
+            i += 1
+        label[count][0] = _max_index
+        count += 1
     return label
 
 
@@ -246,7 +256,6 @@ for i in range(n_class):
     Y[:, i] = (train_label == i).astype(int).ravel()
 
 # Logistic Regression with Gradient Descent
-print("Computing big dick damage.")
 W = np.zeros((n_feature + 1, n_class))
 initialWeights = np.zeros((n_feature + 1, 1))
 opts = {'maxiter': 100}
@@ -276,9 +285,6 @@ print('\n\n--------------SVM-------------------\n\n')
 ##################
 # YOUR CODE HERE #
 ##################
-
-print("Computing even bigger dick damage.")
-
 newtrain_label = train_label.reshape(train_label.shape[0])
 newvalidation_label = validation_label.reshape(validation_label.shape[0])
 newtest_label = test_label.reshape(test_label.shape[0])
