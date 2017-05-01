@@ -104,25 +104,22 @@ def blrObjFunction(initialWeights, *args):
                     error function
     """
     train_data, labeli = args
-
     n_data = train_data.shape[0]
     n_features = train_data.shape[1]
     error = 0
     error_grad = np.zeros((n_features + 1, 1))
-
     ##################
     # YOUR CODE HERE #
     ##################
     # HINT: Do not forget to add the bias term to your input data
-
     #BIAS to FRONT
     bias = np.ones((n_data,1))
     x = np.c_[bias,train_data]
 
-    theta = sigmoid(np.dot(x,initialWeights))
+    w = initialWeights.reshape(n_features+1,1)
+
+    theta = sigmoid(np.dot(x,w))
     
-    #use = np.ones((train_data.shape[0],1))
-    #use1 = np.subtract(np.ones((train_data.shape[0],1)),theta)
     # ERROR
     a = np.dot(labeli.T,np.log(theta)) #temp1
 
@@ -163,7 +160,7 @@ def blrPredict(W, data):
     d = np.c_[bias,data]
 
     #gen label
-    y = sigmoid(np.dot(data,W))
+    y = sigmoid(np.dot(d,W))
     count = 0
     for e in y:
         i = 0
@@ -295,21 +292,21 @@ print('Testing Set Accuracy(linear):' + str(clf.score(test_data, newtest_label) 
  
 clf = SVC(kernel='rbf', gamma=1.0)
 clf.fit(train_data, newtrain_label)
-print('===========\n Accuracy using rbf and default gamma ===========\n')
+print('\n=========== Accuracy using rbf and default gamma ===========\n')
 print('Training Set Accuracy(rbf_gamma1):' + str(clf.score(train_data, newtrain_label) * 100) + '%\n')
 print('Validation Set Accuracy(rbf_gamma1):' + str(clf.score(validation_data, newvalidation_label) * 100) + '%\n')
 print('Testing Set Accuracy(rbf_gamma1):' + str(clf.score(test_data, newtest_label) * 100) + '%\n')
  
 clf = SVC(kernel='rbf')
 clf.fit(train_data, newtrain_label)
-print('===========\n Accuracy using rbf ===========\n')
+print('\n=========== Accuracy using rbf ===========\n')
 print('Training Set Accuracy(rbf_default):' + str(clf.score(train_data, newtrain_label) * 100) + '%\n')
 print('Validation Set Accuracy(rbf_default):' + str(clf.score(validation_data, newvalidation_label) * 100) + '%\n')
 print('Testing Set Accuracy(rbf_defualt):' + str(clf.score(test_data, newtest_label) * 100) + '%\n')
 
 clf = SVC(kernel='rbf', C=1)    
 clf.fit(train_data, newtrain_label)
-print('===========\n Accuracy using rbf, default gamma and C = 1 =========== \n')
+print('\n=========== Accuracy using rbf, default gamma and C = 1 =========== \n')
 print('Training Set Accuracy(rbf_c', 1, '):', str(clf.score(train_data, newtrain_label) * 100) + '%\n')
 print('Validation Set Accuracy(rbf_c', 1, '):', str(clf.score(validation_data, newvalidation_label) * 100) + '%\n')
 print('Testing Set Accuracy(rbf_c', 1, '):', str(clf.score(test_data, newtest_label) * 100) + '%\n')
@@ -318,7 +315,7 @@ i = 10
 while i < 100:
     clf = SVC(kernel='rbf',C=i)
     clf.fit(train_data,train_label)
-    print('===========\n Accuracy using rbf,default gamma, and C = '+i+'===========\n')
+    print('\n=========== Accuracy using rbf,default gamma, and C = '+i+'===========\n')
     print('\n Training set Accuracy: ' + str(clf.score(train_data, train_label)*100) + '%')
     print('\n Validation set Accuracy: ' + str(clf.score(validation_data, validation_label)*100) + '%')
     print('\n Testing set Accuracy: ' + str(clf.score(test_data, test_label)*100) + '%')
