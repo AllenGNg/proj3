@@ -3,6 +3,8 @@ from scipy.io import loadmat
 from scipy.optimize import minimize
 from sklearn.svm import SVC
 
+f = open('asst3.txt','w')
+
 def preprocess():
     """ 
      Input:
@@ -260,21 +262,21 @@ for i in range(n_class):
 
 # Find the accuracy on Training Dataset
 predicted_label = blrPredict(W, train_data)
-print('\n Training set Accuracy:' + str(100 * np.mean((predicted_label == train_label).astype(float))) + '%')
-
+#print('\n Training set Accuracy:' + str(100 * np.mean((predicted_label == train_label).astype(float))) + '%')
+f.write('\n Training set Accuracy:' + str(100 * np.mean((predicted_label == train_label).astype(float))) + '%')
 # Find the accuracy on Validation Dataset
-predicted_label = blrPredict(W, validation_data)
-print('\n Validation set Accuracy:' + str(100 * np.mean((predicted_label == validation_label).astype(float))) + '%')
+#predicted_label = blrPredict(W, validation_data)
+f.write('\n Validation set Accuracy:' + str(100 * np.mean((predicted_label == validation_label).astype(float))) + '%')
 
 # Find the accuracy on Testing Dataset
 predicted_label = blrPredict(W, test_data)
-print('\n Testing set Accuracy:' + str(100 * np.mean((predicted_label == test_label).astype(float))) + '%')
+f.write('\n Testing set Accuracy:' + str(100 * np.mean((predicted_label == test_label).astype(float))) + '%')
 
 """
 Script for Support Vector Machine
 """
 
-print('\n\n--------------SVM-------------------\n\n')
+f.write('\n\n--------------SVM-------------------\n\n')
 ##################
 # YOUR CODE HERE #
 ##################
@@ -284,43 +286,43 @@ newtest_label = test_label.reshape(test_label.shape[0])
 
 clf = SVC(kernel='linear')
 clf.fit(train_data, newtrain_label)
-print('===========\n Accuracy with linear =========== \n')
-print('Training Set Accuracy(linear):' + str(clf.score(train_data, newtrain_label) * 100) + '%\n') 
-print('Validation Set Accuracy(linear):' + str(clf.score(validation_data, newvalidation_label) * 100) + '%\n')
-print('Testing Set Accuracy(linear):' + str(clf.score(test_data, newtest_label) * 100) + '%\n')
+f.write('===========\n Accuracy with linear =========== \n')
+f.write('Training Set Accuracy:' + str(clf.score(train_data, newtrain_label) * 100) + '%\n') 
+f.write('Validation Set Accuracy:' + str(clf.score(validation_data, newvalidation_label) * 100) + '%\n')
+f.write('Testing Set Accuracy:' + str(clf.score(test_data, newtest_label) * 100) + '%\n')
  
  
 clf = SVC(kernel='rbf', gamma=1.0)
 clf.fit(train_data, newtrain_label)
-print('\n=========== Accuracy using rbf and default gamma ===========\n')
-print('Training Set Accuracy(rbf_gamma1):' + str(clf.score(train_data, newtrain_label) * 100) + '%\n')
-print('Validation Set Accuracy(rbf_gamma1):' + str(clf.score(validation_data, newvalidation_label) * 100) + '%\n')
-print('Testing Set Accuracy(rbf_gamma1):' + str(clf.score(test_data, newtest_label) * 100) + '%\n')
+f.write('\n=========== Accuracy using rbf and default gamma ===========\n')
+f.write('Training Set Accuracy:' + str(clf.score(train_data, newtrain_label) * 100) + '%\n')
+f.write('Validation Set Accuracy:' + str(clf.score(validation_data, newvalidation_label) * 100) + '%\n')
+f.write('Testing Set Accuracy:' + str(clf.score(test_data, newtest_label) * 100) + '%\n')
  
 clf = SVC(kernel='rbf')
 clf.fit(train_data, newtrain_label)
-print('\n=========== Accuracy using rbf ===========\n')
-print('Training Set Accuracy(rbf_default):' + str(clf.score(train_data, newtrain_label) * 100) + '%\n')
-print('Validation Set Accuracy(rbf_default):' + str(clf.score(validation_data, newvalidation_label) * 100) + '%\n')
-print('Testing Set Accuracy(rbf_defualt):' + str(clf.score(test_data, newtest_label) * 100) + '%\n')
+f.write('\n=========== Accuracy using rbf ===========\n')
+f.write('Training Set Accuracy:' + str(clf.score(train_data, newtrain_label) * 100) + '%\n')
+f.write('Validation Set Accuracy:' + str(clf.score(validation_data, newvalidation_label) * 100) + '%\n')
+f.write('Testing Set Accuracy:' + str(clf.score(test_data, newtest_label) * 100) + '%\n')
 
 clf = SVC(kernel='rbf', C=1)    
 clf.fit(train_data, newtrain_label)
-print('\n=========== Accuracy using rbf, default gamma and C = 1 =========== \n')
-print('Training Set Accuracy(rbf_c', 1, '):', str(clf.score(train_data, newtrain_label) * 100) + '%\n')
-print('Validation Set Accuracy(rbf_c', 1, '):', str(clf.score(validation_data, newvalidation_label) * 100) + '%\n')
-print('Testing Set Accuracy(rbf_c', 1, '):', str(clf.score(test_data, newtest_label) * 100) + '%\n')
+f.write('\n=========== Accuracy using rbf, default gamma and C = 1 =========== \n')
+f.write('Training Set Accuracy:' + str(clf.score(train_data, newtrain_label) * 100) + '%\n')
+f.write('Validation Set Accuracy:' + str(clf.score(validation_data, newvalidation_label) * 100) + '%\n')
+f.write('Testing Set Accuracy:' + str(clf.score(test_data, newtest_label) * 100) + '%\n')
 
 i = 10
 while i < 100:
     clf = SVC(kernel='rbf',C=i)
-    clf.fit(train_data,train_label)
-    print('\n=========== Accuracy using rbf,default gamma, and C = '+i+'===========\n')
-    print('\n Training set Accuracy: ' + str(clf.score(train_data, train_label)*100) + '%')
-    print('\n Validation set Accuracy: ' + str(clf.score(validation_data, validation_label)*100) + '%')
-    print('\n Testing set Accuracy: ' + str(clf.score(test_data, test_label)*100) + '%')
+    clf.fit(train_data,newtrain_label)
+    f.write('\n=========== Accuracy using rbf,default gamma, and C = '+str(i)+'===========\n')
+    f.write('Training set Accuracy: ' + str(clf.score(train_data, newtrain_label)*100) + '%\n')
+    f.write('Validation set Accuracy: ' + str(clf.score(validation_data, newvalidation_label)*100) + '%\n')
+    f.write('Testing set Accuracy: ' + str(clf.score(test_data, newtest_label)*100) + '%\n')
     i += 10
-
+f.close()
 """
 Script for Extra Credit Part
 """
